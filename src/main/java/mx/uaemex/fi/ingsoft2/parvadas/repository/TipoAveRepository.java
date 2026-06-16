@@ -25,7 +25,15 @@ public class TipoAveRepository {
         return tipoAveCrud.save(tipoAve);
     }
 
-    public void delete(TipoAveEntity tipoAve) {
-        tipoAveCrud.delete(tipoAve);
+    public Optional<TipoAveEntity> getByNombre(String nombre) {
+        return tipoAveCrud.findByNombre(nombre);
+    }
+
+    public List<TipoAveEntity> listarAlfabeticamente() {
+        return tipoAveCrud.findByOrderByNombreAsc();
+    }
+
+    public List<TipoAveEntity> buscarPorNombreFlexible(String palabraClave) {
+        return tipoAveCrud.findByNombreContainingIgnoreCase(palabraClave);
     }
 }

@@ -25,9 +25,11 @@ public class GallineroService {
         return gallineroRepository.save(gallinero);
     }
 
+    // CORRECCIÓN: Cambiado de borrado físico a inhabilitación lógica (Soft Delete)
     public boolean eliminar(int id) {
         return gallineroRepository.getById(id).map(g -> {
-            gallineroRepository.delete(g);
+            g.setActivo(false); // Inhabilitación lógica conforme al estándar del proyecto
+            gallineroRepository.save(g);
             return true;
         }).orElse(false);
     }

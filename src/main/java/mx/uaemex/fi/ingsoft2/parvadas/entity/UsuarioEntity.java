@@ -2,13 +2,17 @@ package mx.uaemex.fi.ingsoft2.parvadas.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
@@ -43,9 +47,14 @@ public class UsuarioEntity {
     @Column(name = "fecha_registro", nullable = false, updatable = false)
     private Date fechaRegistro = new Date(); // Almacena la fecha del registro
 
-    @ManyToOne
-    @JoinColumn(name = "id_tipo_usuario", nullable = false)
-    private TipoDeUsuarioEntity tipoUsuario;
+    // CORRECCIÓN PARA EL CASO DE USO 1.0 (Asignar más de un tipo de usuario)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "usuarios_tipos_de_usuario",
+        joinColumns = @JoinColumn(name = "id_usuario"),
+        inverseJoinColumns = @JoinColumn(name = "id_tipo_usuario")
+    )
+    private List<TipoDeUsuarioEntity> tiposUsuario = new ArrayList<>();
 
     // --- GETTERS Y SETTERS ---
     public int getIdUsuario() { return idUsuario; }
@@ -64,7 +73,7 @@ public class UsuarioEntity {
     public void setCorreo(String correo) { this.correo = correo; }
 
     public String getCelular() { return celular; }
-    public void setCellular(String celular) { this.celular = celular; }
+    public void setCelular(String celular) { this.celular = celular; }
 
     public String getContrasena() { return contrasena; }
     public void setContrasena(String contrasena) { this.contrasena = contrasena; }
@@ -75,6 +84,6 @@ public class UsuarioEntity {
     public Date getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(Date fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
-    public TipoDeUsuarioEntity getTipoUsuario() { return tipoUsuario; }
-    public void setTipoUsuario(TipoDeUsuarioEntity tipoUsuario) { this.tipoUsuario = tipoUsuario; }
+    public List<TipoDeUsuarioEntity> getTiposUsuario() { return tiposUsuario; }
+    public void setTiposUsuario(List<TipoDeUsuarioEntity> tiposUsuario) { this.tiposUsuario = tiposUsuario; }
 }

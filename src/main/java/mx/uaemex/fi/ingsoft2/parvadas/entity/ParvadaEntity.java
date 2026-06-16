@@ -26,17 +26,20 @@ public class ParvadaEntity {
     private Date fechaNacimiento;
 
     @Column(name = "activa", nullable = false)
-    private boolean activa = true; // Para el caso de uso "Dar de baja una parvada"
+    private boolean activa = true;
 
-    // Relación 1: Muchas parvadas pueden ser del mismo Tipo de Ave
     @ManyToOne
     @JoinColumn(name = "id_tipo_ave", nullable = false)
     private TipoAveEntity tipoAve;
 
-    // Relación 2: Muchas parvadas pueden alojarse en el mismo Gallinero
     @ManyToOne
     @JoinColumn(name = "id_gallinero", nullable = false)
     private GallineroEntity gallinero;
+
+    // NUEVA RELACIÓN AGREGADA: El usuario responsable asignado a la parvada
+    @ManyToOne
+    @JoinColumn(name = "id_responsable", nullable = false)
+    private UsuarioEntity responsable;
 
     // --- GETTERS Y SETTERS ---
     public int getIdParvada() { return idParvada; }
@@ -56,4 +59,7 @@ public class ParvadaEntity {
 
     public GallineroEntity getGallinero() { return gallinero; }
     public void setGallinero(GallineroEntity gallinero) { this.gallinero = gallinero; }
+
+    public UsuarioEntity getResponsable() { return responsable; }
+    public void setResponsable(UsuarioEntity responsable) { this.responsable = responsable; }
 }

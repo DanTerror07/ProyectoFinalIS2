@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Tipos de Ave</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4 text-center text-primary">Sistema de Gestión de Parvadas - UAEMex</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Registrar Tipo de Ave</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/web/tipos-ave/guardar}" th:object="${nuevoTipo}" method="POST">
+                        <div class="mb-3">
+                            <label for="idTipoAve" class="form-label">ID Tipo de Ave</label>
+                            <input type="number" class="form-control" id="idTipoAve" th:field="*{idTipoAve}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre de la Especie</label>
+                            <input type="text" class="form-control" id="nombre" th:field="*{nombre}" placeholder="Ej. Pollos de engorda" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="3" placeholder="Detalles de la producción..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Guardar en Base de Datos</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="card-title mb-0">Especies de Aves Registradas</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ave : ${listaAves}">
+                                <td th:text="${ave.idTipoAve}">1</td>
+                                <td th:text="${ave.nombre}">Pollos de engorda</td>
+                                <td th:text="${ave.descripcion}">Producción de carne</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(listaAves)}">
+                                <td colspan="3" class="text-center text-muted">No hay especies registradas en el contenedor Docker todavía.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

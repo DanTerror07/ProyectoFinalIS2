@@ -28,7 +28,7 @@ public class UsuarioController {
             UsuarioEntity guardado = usuarioService.guardar(usuario);
             return new ResponseEntity<>(guardado, HttpStatus.CREATED);
         } catch (Exception e) {
-            // Retorna un error 400 Bad Request con el mensaje del flujo excepcional (Correo/Celular duplicado)
+            // Retorna un error 400 Bad Request con el mensaje del flujo excepcional (Información omitida / Duplicados)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -56,9 +56,30 @@ public class UsuarioController {
     // 5. Dar de baja un usuario (Inhabilitar) -> DELETE http://localhost:8080/usuarios/borrar/200
     @DeleteMapping("/borrar/{id}")
     public ResponseEntity<String> darDeBaja(@PathVariable("id") int id) {
-        if (usuarioService.inhabilitarUsuario(id)) {
+        try {
+            usuarioService.inhabilitarUsuario(id);
             return ResponseEntity.ok("Usuario inhabilitado con exito conforme al caso de uso.");
+        } catch (Exception e) {
+            // FLUJO ALTERNO DEL PDF: Retorna un 400 Bad Request si viola la regla de negocio de la parvada huérfana
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        return new ResponseEntity<>("Usuario no encontrado.", HttpStatus.NOT_FOUND);
+    }
+
+    // 6. REGLA DEL PDF: Listar ordenado alfabéticamente -> GET http://localhost:8080/usuarios/listar/alfabetico
+    @GetMapping("/listar/alfabetico")
+    public List<UsuarioEntity> listarAlfabeticamente() {
+        return usuarioService.listarAlfabeticamente();
+    }
+
+    // 7. REGLA DEL PDF: Consulta flexible (Por correo, celular o parte del nombre) -> GET http://localhost:8080/usuarios/consultar?criterio=...
+    @GetMapping("/consultar")
+    public ResponseEntity<?> consultarUsuario(@RequestParam("criterio") String criterio) {
+        try {
+            List<UsuarioEntity> resultados = usuarioService.consultarFlexible(criterio);
+            return new ResponseEntity<>(resultados, HttpStatus.OK);
+        } catch (Exception e) {
+            // FLUJO EXCEPCIONAL DEL PDF: Retorna un 404 con el mensaje de que no existen registros correspondientes
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
